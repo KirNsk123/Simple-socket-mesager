@@ -1,7 +1,5 @@
 import socket
 
-end_list = ['стоп', 'конец']
-
 clt = socket.socket()
 clt.connect(('localhost', 9090))
 while True:

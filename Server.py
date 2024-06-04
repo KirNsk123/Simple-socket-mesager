@@ -1,6 +1,8 @@
 import socket
 import time
 
+running = True
+
 def recive_data():
     data_rcv = conn.recv(1024).decode('utf-8')
     if data_rcv == "Client closed connection":
@@ -13,13 +15,28 @@ def recive_data():
         return f"Клиент: {data_rcv}"
 
 def send_data():
-    data_snd = input("Вы: ").encode('utf-8')
-    if data_snd.decode('utf-8') == "конец":
+    data_snd = input("Вы: ")
+    if data_snd == "конец":
         conn.send("Server closed connection".encode('utf-8'))
         conn.close()
         return 1
     else:
-        return data_snd
+        return data_snd.encode('utf-8')
+
+def main():
+    global running
+    data_rcv = recive_data()
+    if data_rcv == 1:
+        running = False
+        return "stop"
+    else:
+        print(data_rcv)
+    data_snd = send_data()
+    if data_snd == 1:
+        running = False
+        return "stop"
+    else:
+        conn.send(data_snd)
 
 
 print("Сервер запущен")
@@ -33,26 +50,9 @@ conn, addr = srv.accept()
 
 print('Соединение найдено!', addr)
 
-while True:
-#    data_rcv = conn.recv(1024).decode('utf-8')
-#    if data_rcv == "Client closed connection":
-#        print("Клиент разорвал соединие...")
-#        conn.close()
-#        break
-#    else:
-#        print("Клиент:", data_rcv)
-#    if not data_rcv:
-#        break
-    data_rcv = recive_data()
-    print(data_rcv)
-#    data_snd = input("Вы: ").encode('utf-8')
-#    if data_snd.decode('utf-8') == "конец":
-#        conn.send("Server closed connection".encode('utf-8'))
-#        conn.close()
-#        break
-#    else:
-#        conn.send(data_snd)
-    data_snd = send_data()
-    conn.send(data_snd)
+while running:
+    main()
+    if not running:
+        break
 
 conn.close()
