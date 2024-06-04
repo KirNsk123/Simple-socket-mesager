@@ -3,7 +3,7 @@ import time
 
 running = True
 
-def recive_data():
+def receive_data():
     data_rcv = conn.recv(1024).decode('utf-8')
     if data_rcv == "Client closed connection":
         print("Клиент разорвал соединие...")
@@ -25,7 +25,7 @@ def send_data():
 
 def main():
     global running
-    data_rcv = recive_data()
+    data_rcv = receive_data()
     if data_rcv == 1:
         running = False
         return "stop"
